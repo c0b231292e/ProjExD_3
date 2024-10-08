@@ -25,7 +25,7 @@ def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
     return yoko, tate
         
 class Score:
-    def __init__(self,height):
+    def __init__(self,height) -> None:
         self.score = 0  # スコアの初期値
         self.fonto = pg.font.SysFont("hgp創英角ﾎﾟｯﾌﾟ体", 30)  # フォント設定
         self.img = self.fonto.render(f"スコア: {self.score}", 0, (0,0,255))  # 初期スコアの描画
@@ -165,13 +165,15 @@ def main():
     tmr = 0
     score = Score(HEIGHT)
     scores = 0
+    ls = []
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 return
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 # スペースキー押下でBeamクラスのインスタンス生成
-                beam = Beam(bird)           
+                beam = Beam(bird)  
+                ls.append(beam)         
         screen.blit(bg_img, [0, 0])
         
         for bomb in bombs:
@@ -188,12 +190,13 @@ def main():
                 return
         
         for j,bomb in enumerate (bombs):
-            if beam is not None:      
-                if beam.rct.colliderect(bomb.rct):  # ビームと爆弾が衝突したら
-                    beam, bombs[j] = None, None
-                    bird.change_img(6, screen)
-                    scores += 1
-                    pg.display.update()
+            for i ,Beam in enumerate(ls):
+                if beam is not None:      
+                    if beam.rct.colliderect(bomb.rct):  # ビームと爆弾が衝突したら
+                        beam, bombs[j] = None, None
+                        bird.change_img(6, screen)
+                        scores += 1
+                        pg.display.update()
         bombs = [bomb for bomb in bombs if bomb is not None]
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
